@@ -40,6 +40,7 @@ com/upgrad/FoodOrderingApp/api/model/AddressListResponse.class
 com/upgrad/FoodOrderingApp/api/model/ItemQuantityResponseItem.class
 com/upgrad/FoodOrderingApp/api/controller/CategoryController.class
 com/upgrad/FoodOrderingApp/api/model/CategoryListResponse.class
+com/upgrad/FoodOrderingApp/api/exception/RestExceptionHandler.class
 com/upgrad/FoodOrderingApp/api/controller/CustomerController.class
 com/upgrad/FoodOrderingApp/api/model/LogoutResponse.class
 com/upgrad/FoodOrderingApp/api/model/RestaurantUpdatedResponse.class

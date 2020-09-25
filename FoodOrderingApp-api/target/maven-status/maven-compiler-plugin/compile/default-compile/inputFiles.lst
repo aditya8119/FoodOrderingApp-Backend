@@ -20,6 +20,7 @@
 /Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/target/generated-sources/./com/upgrad/FoodOrderingApp/api/model/CategoryDetailsResponse.java
 /Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/target/generated-sources/./com/upgrad/FoodOrderingApp/api/model/OrderListCoupon.java
 /Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/target/generated-sources/./io/swagger/api/NotFoundException.java
+/Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/src/main/java/com/upgrad/FoodOrderingApp/api/exception/RestExceptionHandler.java
 /Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/target/generated-sources/./com/upgrad/FoodOrderingApp/api/model/UpdatePasswordRequest.java
 /Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/target/generated-sources/./com/upgrad/FoodOrderingApp/api/model/ItemQuantity.java
 /Users/adbalasu/Documents/Upgrad/Capstone/Final/FoodOrderingApp-Backend/FoodOrderingApp-api/target/generated-sources/./com/upgrad/FoodOrderingApp/api/model/StatesListResponse.java

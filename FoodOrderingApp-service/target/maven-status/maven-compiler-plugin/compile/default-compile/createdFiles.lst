@@ -1,9 +1,11 @@
+com/upgrad/FoodOrderingApp/service/businness/AuthenticationService.class
 com/upgrad/FoodOrderingApp/service/entity/PaymentEntity.class
 com/upgrad/FoodOrderingApp/service/exception/CouponNotFoundException.class
 com/upgrad/FoodOrderingApp/service/exception/SaveAddressException.class
 com/upgrad/FoodOrderingApp/service/businness/PasswordCryptographyProvider.class
 com/upgrad/FoodOrderingApp/service/common/ErrorCode.class
 com/upgrad/FoodOrderingApp/service/exception/AddressNotFoundException.class
+com/upgrad/FoodOrderingApp/service/entity/CustomerAuthTokenEntity.class
 com/upgrad/FoodOrderingApp/service/exception/CategoryNotFoundException.class
 com/upgrad/FoodOrderingApp/service/exception/AuthenticationFailedException.class
 com/upgrad/FoodOrderingApp/service/exception/SignUpRestrictedException.class
