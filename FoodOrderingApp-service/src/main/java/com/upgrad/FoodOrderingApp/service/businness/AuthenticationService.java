@@ -34,7 +34,7 @@ public class AuthenticationService {
     public CustomerAuthTokenEntity authenticate(final String contact_number, final String password)
             throws AuthenticationFailedException {
 
-        CustomerEntity customerEntity = customerDao.getUserByContact_number(contact_number);
+        CustomerEntity customerEntity = customerDao.getCustomerByContact_number(contact_number);
         if (customerEntity == null) {
             throw new AuthenticationFailedException("ATH-003", "This contact number has not been registered!");
         }

@@ -1,13 +1,16 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.LoginResponse;
+import com.upgrad.FoodOrderingApp.api.model.LogoutResponse;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
+import com.upgrad.FoodOrderingApp.service.businness.LogoutService;
 import com.upgrad.FoodOrderingApp.service.businness.SignupService;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +32,9 @@ public class CustomerController {
 
     @Autowired
     AuthenticationService authenticationService;
+
+    @Autowired
+    LogoutService logoutService;
 
     /**
      *
@@ -88,5 +94,29 @@ public class CustomerController {
             headers.add("access-token", customerAuthTokenEntity.getAccessToken());
             return new ResponseEntity<LoginResponse>(authorizedCustomerResponse, headers, HttpStatus.OK);
 
+    }
+
+    /**
+     * This method exposes endpoint to Logout a user
+     *
+     * @param authorization The logout user request details
+     * @return ResponseEntity
+     * @throws AuthorizationFailedException This exception is thrown if either given username or email address already exists in the application
+     */
+    @RequestMapping(method = RequestMethod.POST,
+            path = "/user/logout",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LogoutResponse> logout(
+            @RequestHeader("authorization") final String authorization)
+            throws AuthorizationFailedException {
+        String customerUUID = logoutService.logout(authorization);
+
+        LogoutResponse logoutResponse = new LogoutResponse().id(customerUUID)
+                .message("LOGGED OUT SUCCESSFULLY");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("customer-uuid", customerUUID);
+
+        return new ResponseEntity<LogoutResponse>(logoutResponse, headers, HttpStatus.OK);
     }
 }
