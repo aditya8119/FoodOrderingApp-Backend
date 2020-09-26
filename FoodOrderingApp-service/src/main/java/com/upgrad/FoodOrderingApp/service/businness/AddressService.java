@@ -85,8 +85,7 @@ public class AddressService {
 
     }
 
-    public List<StateEntity> getAllStates() throws AuthorizationFailedException {
-        //customerAdminBusinessService.validateAccessToken(bearerToken);
+    public List<StateEntity> getAllStates() {
         return stateDao.getAllStates();
     }
 
