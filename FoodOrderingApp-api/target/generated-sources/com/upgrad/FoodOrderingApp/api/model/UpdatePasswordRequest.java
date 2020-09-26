@@ -13,7 +13,7 @@ import javax.validation.constraints.*;
  * UpdatePasswordRequest
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-09-24T22:14:08.478+05:30")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-09-26T02:20:05.096+05:30")
 
 public class UpdatePasswordRequest   {
   @JsonProperty("old_password")
