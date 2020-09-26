@@ -28,8 +28,8 @@ public class SignupService {
         String validEmailRegex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         String validContactNumberRegex = "\\d{10}";
         String validPasswordRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[#@$%&*!^]).{8,}$";
-        if(customerDao.getCustomerByContact_number(customerEntity.getContact_number())==null){
-            if(customerEntity.getFirstName()==null || customerEntity.getEmail()==null || customerEntity.getContact_number()==null || customerEntity.getPassword()==null){
+        if(customerDao.getCustomerByContact_number(customerEntity.getContactNumber())==null){
+            if(customerEntity.getFirstName()==null || customerEntity.getEmail()==null || customerEntity.getContactNumber()==null || customerEntity.getPassword()==null){
                 System.out.println("I AM HERE");
                 throw new SignUpRestrictedException("SGR-005", "Except last name all fields should be filled");
             } else {
@@ -37,7 +37,7 @@ public class SignupService {
                     throw new SignUpRestrictedException("SGR-002", "Invalid email-id format!");
                 } else {
 
-                    if(!customerEntity.getContact_number().matches(validContactNumberRegex)){
+                    if(!customerEntity.getContactNumber().matches(validContactNumberRegex)){
                         throw new SignUpRestrictedException("SGR-003", "Invalid contact number!");
                     } else {
 
