@@ -12,7 +12,9 @@ import java.io.Serializable;
 @NamedQueries(
         {
                 @NamedQuery(name = "customerByContact_number", query = "select u from CustomerEntity u where u.contact_number = :contact_number"),
-                @NamedQuery(name = "customerById", query = "select u from CustomerEntity u where u.id = :id")
+                @NamedQuery(name = "customerById", query = "select u from CustomerEntity u where u.id = :id"),
+                @NamedQuery(name = "customerByUuid", query = "select c from CustomerEntity c where c.uuid = :uuid")
+
         }
 )
 

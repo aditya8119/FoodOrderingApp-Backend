@@ -96,6 +96,15 @@ public class CustomerDao {
             //Here there is an else part to add various actions
         return userAuthTokenEntity;
     }
+
+    public CustomerEntity getCustomerByUuid(final String uuid) {
+        try {
+            return entityManager.createNamedQuery("customerByUuid", CustomerEntity.class).setParameter("uuid", uuid)
+                    .getSingleResult();
+        } catch(NoResultException nre) {
+            return null;
+        }
+    }
 }
 
 
