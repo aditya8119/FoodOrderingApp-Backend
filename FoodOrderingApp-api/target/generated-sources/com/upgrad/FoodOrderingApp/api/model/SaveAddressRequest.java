@@ -13,7 +13,7 @@ import javax.validation.constraints.*;
  * SaveAddressRequest
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-09-26T02:20:05.522+05:30")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-09-26T14:00:29.768+05:30")
 
 public class SaveAddressRequest   {
   @JsonProperty("flat_building_name")
