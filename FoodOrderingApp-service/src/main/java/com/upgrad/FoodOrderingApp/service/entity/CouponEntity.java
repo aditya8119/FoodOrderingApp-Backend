@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 /**
- * This entity is used to get coupon by name
+ * This entity is used to get coupon by name for customer
  */
 @Entity
 @Table(name = "coupon")
