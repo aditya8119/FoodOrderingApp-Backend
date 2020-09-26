@@ -55,8 +55,8 @@ public class OrderEntity {
     private AddressEntity addressEntity;
 
 
-//    @OneToMany(mappedBy="orderEntity")
-//    private List<OrderItemEntity> orderItem;
+    @OneToMany(mappedBy="orderEntity")
+    private List<OrderItemEntity> orderItem;
 
     public int getId() {
         return id;
@@ -138,12 +138,12 @@ public class OrderEntity {
         this.addressEntity = addressEntity;
     }
 
-//    public List<OrderItemEntity> getOrderItem() {
-//        return orderItem;
-//    }
+    public List<OrderItemEntity> getOrderItem() {
+        return orderItem;
+    }
 
-//    public void setOrderItem(List<OrderItemEntity> orderItem) {
-//        this.orderItem = orderItem;
-//    }
+    public void setOrderItem(List<OrderItemEntity> orderItem) {
+        this.orderItem = orderItem;
+    }
 
 }
