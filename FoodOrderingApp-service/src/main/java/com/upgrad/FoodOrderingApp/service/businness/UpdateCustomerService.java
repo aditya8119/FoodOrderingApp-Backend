@@ -32,7 +32,7 @@ public class UpdateCustomerService {
         else if (customerAuthTokenEntity.getLogoutAt()!= null){
             throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
         }
-        System.out.println(" customerAuthTokenEntity.getCustomer().getContact_number IS " + customerAuthTokenEntity.getCustomer().getContactNumber());
+
         CustomerEntity  customerEntity = customerAuthTokenEntity.getCustomer();
         return customerEntity;
     }

@@ -28,7 +28,7 @@ public class CustomerDao {
         try {
             //Todo
             return entityManager.createNamedQuery("customerByContactNumber", CustomerEntity.class)
-                    .setParameter("contact_number", contactNumber).getSingleResult();
+                    .setParameter("contactNumber", contactNumber).getSingleResult();
         } catch (NoResultException exc) {
             return null;
         }

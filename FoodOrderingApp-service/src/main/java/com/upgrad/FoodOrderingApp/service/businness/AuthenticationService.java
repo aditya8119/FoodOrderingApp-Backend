@@ -31,14 +31,14 @@ public class AuthenticationService {
      *                                       Password Failed
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerAuthTokenEntity authenticate(final String contact_number, final String password)
+    public CustomerAuthTokenEntity authenticate(final String contactNumber, final String password)
             throws AuthenticationFailedException {
         //Todo4
-        CustomerEntity customerEntity = customerDao.getCustomerByContactNumber(contact_number);
+        CustomerEntity customerEntity = customerDao.getCustomerByContactNumber(contactNumber);
         if (customerEntity == null) {
             throw new AuthenticationFailedException("ATH-003", "This contact number has not been registered!");
         }
-        System.out.println("INSIDE AUTHENTICATE CONTACT NUMBER IS:" + contact_number);
+        System.out.println("INSIDE AUTHENTICATE CONTACT NUMBER IS:" + contactNumber);
         System.out.println("CUSTOMER EMAIL IS " + customerEntity.getEmail());
         System.out.println("SALT IS :" + customerEntity.getSalt());
         System.out.println("PASSWORD SENT TO ENCRYPT IS :" + password);
