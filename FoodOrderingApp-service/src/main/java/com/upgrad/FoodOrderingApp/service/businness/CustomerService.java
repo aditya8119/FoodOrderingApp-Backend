@@ -4,6 +4,7 @@ import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,8 +96,41 @@ public class CustomerService {
 
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public String logout(final String authorization)
+            throws AuthorizationFailedException {
 
+        String[] splitToken = authorization.split(" ");
+        String accessToken = splitToken[1];
+        System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
+
+        CustomerAuthTokenEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
+        if (customerAuthTokenEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
+        }
+        else if (customerAuthTokenEntity.getLogoutAt()!= null){
+            throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
+        }
+
+        else if(customerAuthTokenEntity.getExpiresAt().isBefore(ZonedDateTime.now())) {
+            throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint.");
+        }
+        final ZonedDateTime now = ZonedDateTime.now();
+        customerAuthTokenEntity.setLogoutAt(now);
+        customerDao.setUserLogout(customerAuthTokenEntity);
+
+
+        return customerDao.logout(accessToken);
+    }
+
+    public CustomerAuthTokenEntity fetchAuthTokenEntity(final String authorization) throws AuthorizationFailedException {
+        final CustomerAuthTokenEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
+        return fetchedCustomerAuthTokenEntity;
+    }
 }
+
+
+
 
 
 
