@@ -1,17 +1,16 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
-import com.upgrad.FoodOrderingApp.api.model.LoginResponse;
-import com.upgrad.FoodOrderingApp.api.model.LogoutResponse;
-import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
-import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
+import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
 import com.upgrad.FoodOrderingApp.service.businness.LogoutService;
 import com.upgrad.FoodOrderingApp.service.businness.SignupService;
+import com.upgrad.FoodOrderingApp.service.businness.UpdateCustomerService;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
+import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,8 +35,10 @@ public class CustomerController {
     @Autowired
     LogoutService logoutService;
 
+    @Autowired
+    UpdateCustomerService updateService;
+
     /**
-     *
      * @param signupCustomerRequest User Details
      * @return Response Entity
      * @throws SignUpRestrictedException SGR-001 Try any other Username, this Username has already been taken, SGR-002 This user has already been registered, try with any other emailId
@@ -62,7 +63,6 @@ public class CustomerController {
 
 
     /**
-     *
      * @param authorization Bearer Credentials encoded in Base64
      * @return ResponseEntity
      * @throws AuthenticationFailedException ATH-001 This username does not exist, ATH-002 Password failed
@@ -71,6 +71,7 @@ public class CustomerController {
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
 
         System.out.println("Authorization String is " + authorization);
+      
             //Attempting to decode the authorization string.
             try {
                 byte[] decode1 = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
@@ -93,6 +94,7 @@ public class CustomerController {
             HttpHeaders headers = new HttpHeaders();
             headers.add("access-token", customerAuthTokenEntity.getAccessToken());
             return new ResponseEntity<LoginResponse>(authorizedCustomerResponse, headers, HttpStatus.OK);
+
 
     }
 
@@ -118,5 +120,36 @@ public class CustomerController {
         headers.add("customer-uuid", customerUUID);
 
         return new ResponseEntity<LogoutResponse>(logoutResponse, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,
+            path = "/customer",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<UpdateCustomerResponse> updateCustomerDetails(
+            @RequestHeader("authorization") final String authorization,
+            final UpdateCustomerRequest updateCustomerRequest)
+            throws UpdateCustomerException, AuthorizationFailedException{
+
+        CustomerEntity customerEntity = updateService.validateCustomer(authorization);
+
+        if(updateCustomerRequest.getFirstName()==null){
+            throw new UpdateCustomerException("UCR-002","First name field should not be empty");
+        }
+
+        customerEntity.setFirstName(updateCustomerRequest.getFirstName());
+        customerEntity.setLastName(updateCustomerRequest.getLastName());
+
+        CustomerEntity updatedCustomer = updateService.updateCustomerData(customerEntity);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("customer-uuid", updatedCustomer.getUuid());
+
+        UpdateCustomerResponse updateCustomerResponse = new UpdateCustomerResponse();
+        updateCustomerResponse.setFirstName(updatedCustomer.getFirstName());
+        updateCustomerResponse.setLastName(updatedCustomer.getLastName());
+        updateCustomerResponse.setStatus("CUSTOMER DETAILS UPDATED SUCCESSFULLY");
+
+        return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse,headers,HttpStatus.OK);
     }
 }

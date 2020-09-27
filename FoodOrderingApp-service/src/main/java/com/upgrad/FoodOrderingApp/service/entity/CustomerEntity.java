@@ -12,11 +12,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@NamedQueries({
-        @NamedQuery(name = "customerByPhoneNumber", query = "select c from CustomerEntity c where c.contactNumber = :contact_number"),
-        @NamedQuery(name = "authenticateUserQuery", query = "select c from CustomerEntity c where c.contactNumber= :contactNumber and c.password= :password") })
+
+@NamedQueries(
+        {
+                @NamedQuery(name = "customerByContact_number", query = "select u from CustomerEntity u where u.contact_number = :contact_number"),
+                @NamedQuery(name = "customerById", query = "select u from CustomerEntity u where u.id = :id"),
+                @NamedQuery(name = "customerByUuid", query = "select u from CustomerEntity u where u.uuid = :uuid"),
+                @NamedQuery(name = "customerByPhoneNumber", query = "select c from CustomerEntity c where c.contactNumber = :contact_number"),
+                @NamedQuery(name = "authenticateUserQuery", query = "select c from CustomerEntity c where c.contactNumber= :contactNumber and c.password= :password")
+        }
+)
+
+
 @Entity
-@Table(name = "customer")
+@Table(name = "customer", schema = "public")
 public class CustomerEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

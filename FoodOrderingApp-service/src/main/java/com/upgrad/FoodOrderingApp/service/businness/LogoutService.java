@@ -23,14 +23,14 @@ public class LogoutService {
      * Service to get User Details based on access Token
      * @param authorizationToken Access Token provided in the HTTP Request
      * @return UserAuthTokenEntity
-     * @throws AuthorizationFailedException ATHR-001 User has not signed in
+     * @throws AuthorizationFailedException ATHR-001 Customer is not signed in
      */
     @Transactional
     public CustomerAuthTokenEntity getCustomer(final String authorizationToken) throws AuthorizationFailedException {
 
         CustomerAuthTokenEntity customerAuthEntity = customerDao.getCustomerAuthToken(authorizationToken);
         if (customerAuthEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer has not Logged in");
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
         }
         return customerAuthEntity;
     }
@@ -46,7 +46,7 @@ public class LogoutService {
             throws AuthorizationFailedException {
         CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
         if (customerAuthTokenEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer has not Logged In");
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
         }
         else if (customerAuthTokenEntity.getLogoutAt()!= null){
             throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
