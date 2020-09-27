@@ -22,4 +22,19 @@ public class AddressDao {
             return null;
         }
     }
+
+    public AddressEntity createAddress(AddressEntity addressEntity) {
+        entityManager.persist(addressEntity);
+        return addressEntity;
+    }
+
+    public AddressEntity getAddressByUuid(final String addressUuid) {
+        try {
+            return entityManager.createNamedQuery("addressByUuid", AddressEntity.class).setParameter("uuid", addressUuid)
+                    .getSingleResult();
+        } catch(NoResultException nre) {
+            return null;
+        }
+
+    }
 }
