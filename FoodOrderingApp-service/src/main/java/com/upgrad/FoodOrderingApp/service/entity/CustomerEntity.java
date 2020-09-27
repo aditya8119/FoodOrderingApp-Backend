@@ -14,11 +14,11 @@ import java.util.List;
 
 
 @NamedQueries(
-        {
-                @NamedQuery(name = "customerByContact_number", query = "select u from CustomerEntity u where u.contact_number = :contact_number"),
+        {       //Todo 3
+                @NamedQuery(name = "customerByContactNumber", query = "select u from CustomerEntity u where u.contactNumber = :contactNumber"),
                 @NamedQuery(name = "customerById", query = "select u from CustomerEntity u where u.id = :id"),
                 @NamedQuery(name = "customerByUuid", query = "select u from CustomerEntity u where u.uuid = :uuid"),
-                @NamedQuery(name = "customerByPhoneNumber", query = "select c from CustomerEntity c where c.contactNumber = :contact_number"),
+                @NamedQuery(name = "customerByPhoneNumber", query = "select c from CustomerEntity c where c.contactNumber = :contactNumber"),
                 @NamedQuery(name = "authenticateUserQuery", query = "select c from CustomerEntity c where c.contactNumber= :contactNumber and c.password= :password")
         }
 )

@@ -28,7 +28,8 @@ public class SignupService {
         String validEmailRegex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         String validContactNumberRegex = "\\d{10}";
         String validPasswordRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[#@$%&*!^]).{8,}$";
-        if(customerDao.getCustomerByContact_number(customerEntity.getContactNumber())==null){
+        //Todo 5
+        if(customerDao.getCustomerByContactNumber(customerEntity.getContactNumber())==null){
             if(customerEntity.getFirstName()==null || customerEntity.getEmail()==null || customerEntity.getContactNumber()==null || customerEntity.getPassword()==null){
                 System.out.println("I AM HERE");
                 throw new SignUpRestrictedException("SGR-005", "Except last name all fields should be filled");
