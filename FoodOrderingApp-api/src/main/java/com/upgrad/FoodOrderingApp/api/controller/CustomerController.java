@@ -1,10 +1,7 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
-import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
-import com.upgrad.FoodOrderingApp.service.businness.LogoutService;
-import com.upgrad.FoodOrderingApp.service.businness.SignupService;
-import com.upgrad.FoodOrderingApp.service.businness.UpdateCustomerService;
+import com.upgrad.FoodOrderingApp.service.businness.*;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
@@ -37,6 +34,9 @@ public class CustomerController {
 
     @Autowired
     UpdateCustomerService updateService;
+
+    @Autowired
+    UpdatePasswordService updatePasswordService;
 
     /**
      * @param signupCustomerRequest User Details
@@ -151,5 +151,24 @@ public class CustomerController {
         updateCustomerResponse.setStatus("CUSTOMER DETAILS UPDATED SUCCESSFULLY");
 
         return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse,headers,HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,
+            path = "/customer/password",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(
+            @RequestHeader("authorization") final String authorization,
+            final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
+
+        CustomerEntity customerEntity = updateService.validateCustomer(authorization);
+
+        CustomerEntity updatedCustomerEntity = updatePasswordService.updatePassword(customerEntity,updatePasswordRequest.getOldPassword(),updatePasswordRequest.getNewPassword());
+
+        UpdatePasswordResponse updatePasswordResponse = new UpdatePasswordResponse();
+        updatePasswordResponse.setId(updatedCustomerEntity.getUuid());
+        updatePasswordResponse.setStatus("CUSTOMER PASSWORD UPDATED SUCCESSFULLY");
+
+        return new ResponseEntity<UpdatePasswordResponse>(updatePasswordResponse,HttpStatus.OK);
     }
 }
