@@ -27,7 +27,7 @@ public class UpdateCustomerService {
         System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
         CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(accessToken);
         if (customerAuthTokenEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer has not Logged In");
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
         }
         else if (customerAuthTokenEntity.getLogoutAt()!= null){
             throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
