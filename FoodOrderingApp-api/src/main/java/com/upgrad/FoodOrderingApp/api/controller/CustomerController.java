@@ -84,7 +84,7 @@ public class CustomerController {
             String decodedText = new String(decode);
             System.out.println("DECODED TEXT IS " + decodedText);
             String[] decodedArray = decodedText.split(":");
-            CustomerAuthTokenEntity customerAuthTokenEntity = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
+            CustomerAuthTokenEntity customerAuthTokenEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
             CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
             LoginResponse authorizedCustomerResponse = new LoginResponse().id(customerEntity.getUuid())
                     .message("LOGGED IN SUCCESSFULLY");
