@@ -23,10 +23,12 @@ public class CustomerDao {
         return customerEntity;
     }
 
-    public CustomerEntity getCustomerByContact_number(final String contact_number) {
+    //Todo
+    public CustomerEntity getCustomerByContactNumber(final String contactNumber) {
         try {
-            return entityManager.createNamedQuery("customerByContact_number", CustomerEntity.class)
-                    .setParameter("contact_number", contact_number).getSingleResult();
+            //Todo
+            return entityManager.createNamedQuery("customerByContactNumber", CustomerEntity.class)
+                    .setParameter("contact_number", contactNumber).getSingleResult();
         } catch (NoResultException exc) {
             return null;
         }
