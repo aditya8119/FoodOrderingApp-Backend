@@ -23,8 +23,6 @@ import java.util.UUID;
 @RequestMapping("/")
 public class CustomerController {
 
-    @Autowired
-    SignupService signupService;
 
     @Autowired
     AuthenticationService authenticationService;
@@ -37,6 +35,9 @@ public class CustomerController {
 
     @Autowired
     UpdatePasswordService updatePasswordService;
+
+    @Autowired
+    CustomerService customerService;
 
     /**
      * @param signupCustomerRequest User Details
@@ -55,7 +56,7 @@ public class CustomerController {
         customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
         customerEntity.setPassword(signupCustomerRequest.getPassword());
 
-        final CustomerEntity createdCustomerEntity = signupService.signup(customerEntity);
+        final CustomerEntity createdCustomerEntity = customerService.saveCustomer(customerEntity);
         SignupCustomerResponse customerResponse = new SignupCustomerResponse().id(createdCustomerEntity.getUuid()).status("CUSTOMER SUCCESSFULLY REGISTERED");
 
         return new ResponseEntity<SignupCustomerResponse>(customerResponse, HttpStatus.CREATED);
