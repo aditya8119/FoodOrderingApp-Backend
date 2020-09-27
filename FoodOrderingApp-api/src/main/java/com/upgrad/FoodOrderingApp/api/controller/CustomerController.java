@@ -162,9 +162,9 @@ public class CustomerController {
             @RequestHeader("authorization") final String authorization,
             final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
 
-        CustomerEntity customerEntity = updateService.validateCustomer(authorization);
+        CustomerEntity customerEntity = customerService.getCustomer(authorization);
 
-        CustomerEntity updatedCustomerEntity = updatePasswordService.updatePassword(customerEntity,updatePasswordRequest.getOldPassword(),updatePasswordRequest.getNewPassword());
+        CustomerEntity updatedCustomerEntity = customerService.updateCustomerPassword(updatePasswordRequest.getOldPassword(),updatePasswordRequest.getNewPassword(),customerEntity);
 
         UpdatePasswordResponse updatePasswordResponse = new UpdatePasswordResponse();
         updatePasswordResponse.setId(updatedCustomerEntity.getUuid());
