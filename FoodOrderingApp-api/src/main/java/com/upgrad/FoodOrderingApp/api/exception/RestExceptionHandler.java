@@ -74,5 +74,10 @@ public class RestExceptionHandler {
                 new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(SaveAddressException.class)
+    public ResponseEntity<ErrorResponse> saveAddressException(SaveAddressException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 
 }

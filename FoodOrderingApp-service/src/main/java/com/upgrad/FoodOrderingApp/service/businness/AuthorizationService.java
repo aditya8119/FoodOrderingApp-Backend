@@ -6,6 +6,9 @@ import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
+
 @Service
 public class AuthorizationService {
 
@@ -46,5 +49,25 @@ public class AuthorizationService {
     public CustomerAuthTokenEntity fetchAuthTokenEntity(final String authorization) throws AuthorizationFailedException {
         final CustomerAuthTokenEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
         return fetchedCustomerAuthTokenEntity;
+    }
+
+    @Transactional
+    public void validateAccessToken(final String authorizationToken) throws AuthorizationFailedException {
+
+        CustomerAuthTokenEntity customerAuthTokenEntity = customerDao.getCustomerAuthToken(authorizationToken);
+        final ZonedDateTime now = ZonedDateTime.now();
+        if (customerAuthTokenEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
+        } else if (customerAuthTokenEntity.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
+        } else if (now.isAfter(customerAuthTokenEntity.getExpiresAt()) ) {
+            throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
+        }
+
+    }
+
+    @Transactional
+    public CustomerAuthTokenEntity getCustomerAuthToken(final String accessToken) {
+        return customerDao.getCustomerAuthToken(accessToken);
     }
 }

@@ -12,7 +12,11 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "deleteAddressById", query = "delete from AddressEntity a where a.uuid=:addressuuid"),
         @NamedQuery(name = "archiveAddressById", query = "update AddressEntity a set a.active = 0 where a.uuid=:addressuuid"),
-        @NamedQuery(name = "getAddressById", query = "select a from AddressEntity a where a.uuid=:addressuuid")
+        @NamedQuery(name = "getAddressById", query = "select a from AddressEntity a where a.uuid=:addressuuid"),
+        @NamedQuery(name = "addressByUuid", query = "select a from AddressEntity a where a.uuid =:uuid"),
+        @NamedQuery(name = "allAddresses", query = "select a from AddressEntity a "),
+        @NamedQuery(name = "addressById", query = "select a from AddressEntity a where a.id=:id"),
+        @NamedQuery(name = "customerAddressEntities", query= "select a from AddressEntity a where a.id in :addressIds and a.active = 1 order by a.id desc")
 })
 
 
@@ -23,7 +27,7 @@ public class AddressEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
     @Column(name = "UUID")
     @Size(max = 200)
@@ -72,11 +76,11 @@ public class AddressEntity {
         this.stateEntity = stateEntity;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
