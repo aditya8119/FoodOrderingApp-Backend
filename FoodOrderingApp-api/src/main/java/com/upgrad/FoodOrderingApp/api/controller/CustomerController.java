@@ -51,7 +51,7 @@ public class CustomerController {
         customerEntity.setFirstName(signupCustomerRequest.getFirstName());
         customerEntity.setLastName(signupCustomerRequest.getLastName());
         customerEntity.setEmail(signupCustomerRequest.getEmailAddress());
-        customerEntity.setContact_number(signupCustomerRequest.getContactNumber());
+        customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
         customerEntity.setPassword(signupCustomerRequest.getPassword());
 
         final CustomerEntity createdCustomerEntity = signupService.signup(customerEntity);
@@ -89,7 +89,7 @@ public class CustomerController {
             authorizedCustomerResponse.setFirstName(customerEntity.getFirstName());
             authorizedCustomerResponse.setLastName(customerEntity.getLastName());
             authorizedCustomerResponse.setEmailAddress(customerEntity.getEmail());
-            authorizedCustomerResponse.setContactNumber(customerEntity.getContact_number());
+            authorizedCustomerResponse.setContactNumber(customerEntity.getContactNumber());
             HttpHeaders headers = new HttpHeaders();
             headers.add("access-token", customerAuthTokenEntity.getAccessToken());
             return new ResponseEntity<LoginResponse>(authorizedCustomerResponse, headers, HttpStatus.OK);
