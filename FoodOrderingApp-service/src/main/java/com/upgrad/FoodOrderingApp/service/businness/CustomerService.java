@@ -127,6 +127,35 @@ public class CustomerService {
         final CustomerAuthTokenEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
         return fetchedCustomerAuthTokenEntity;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerEntity getCustomer(final String authorization) throws AuthorizationFailedException {
+
+        String[] splitToken = authorization.split(" ");
+        String accessToken = splitToken[1];
+        System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
+        CustomerAuthTokenEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
+        if (customerAuthTokenEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
+        }
+        else if (customerAuthTokenEntity.getLogoutAt()!= null){
+            throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
+        }
+
+        else if(customerAuthTokenEntity.getExpiresAt().isBefore(ZonedDateTime.now())) {
+            throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint.");
+        }
+
+        CustomerEntity  customerEntity = customerAuthTokenEntity.getCustomer();
+        return customerEntity;
+    }
+
+    @Transactional
+    public CustomerEntity updateCustomer(CustomerEntity updatedCustomerData){
+        customerDao.updateCustomer(updatedCustomerData);
+        return updatedCustomerData;
+    }
+
 }
 
 

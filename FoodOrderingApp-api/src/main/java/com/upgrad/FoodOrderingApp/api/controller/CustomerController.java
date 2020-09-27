@@ -132,7 +132,7 @@ public class CustomerController {
             final UpdateCustomerRequest updateCustomerRequest)
             throws UpdateCustomerException, AuthorizationFailedException{
 
-        CustomerEntity customerEntity = updateService.validateCustomer(authorization);
+        CustomerEntity customerEntity =  customerService.getCustomer(authorization);
 
         if(updateCustomerRequest.getFirstName()==null){
             throw new UpdateCustomerException("UCR-002","First name field should not be empty");
@@ -141,7 +141,7 @@ public class CustomerController {
         customerEntity.setFirstName(updateCustomerRequest.getFirstName());
         customerEntity.setLastName(updateCustomerRequest.getLastName());
 
-        CustomerEntity updatedCustomer = updateService.updateCustomerData(customerEntity);
+        CustomerEntity updatedCustomer = customerService.updateCustomer(customerEntity);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("customer-uuid", updatedCustomer.getUuid());
