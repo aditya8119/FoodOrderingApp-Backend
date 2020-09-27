@@ -44,12 +44,21 @@ public class LogoutService {
     @Transactional(propagation = Propagation.REQUIRED)
     public String logout(final String authorization)
             throws AuthorizationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
+
+        String[] splitToken = authorization.split(" ");
+        String accessToken = splitToken[1];
+        System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
+
+        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(accessToken);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
         }
         else if (customerAuthTokenEntity.getLogoutAt()!= null){
             throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
+        }
+
+        else if(customerAuthTokenEntity.getExpiresAt().isBefore(ZonedDateTime.now())) {
+            throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint.");
         }
         final ZonedDateTime now = ZonedDateTime.now();
         customerAuthTokenEntity.setLogoutAt(now);
