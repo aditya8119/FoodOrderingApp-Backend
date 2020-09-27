@@ -52,7 +52,7 @@ public class CustomerController {
         customerEntity.setFirstName(signupCustomerRequest.getFirstName());
         customerEntity.setLastName(signupCustomerRequest.getLastName());
         customerEntity.setEmail(signupCustomerRequest.getEmailAddress());
-        customerEntity.setContact_number(signupCustomerRequest.getContactNumber());
+        customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
         customerEntity.setPassword(signupCustomerRequest.getPassword());
 
         final CustomerEntity createdCustomerEntity = signupService.signup(customerEntity);
@@ -71,28 +71,30 @@ public class CustomerController {
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
 
         System.out.println("Authorization String is " + authorization);
-        //Attempting to decode the authorization string.
-        try {
-            byte[] decode1 = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
-        } catch (Exception e) {
-            throw new AuthenticationFailedException("ATH-003", "Incorrect format of decoded customer name and password");
-        }
-        byte[] decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
-        System.out.println("DECODING DONE");
-        String decodedText = new String(decode);
-        System.out.println("DECODED TEXT IS " + decodedText);
-        String[] decodedArray = decodedText.split(":");
-        CustomerAuthTokenEntity customerAuthTokenEntity = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
-        CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
-        LoginResponse authorizedCustomerResponse = new LoginResponse().id(customerEntity.getUuid())
-                .message("LOGGED IN SUCCESSFULLY");
-        authorizedCustomerResponse.setFirstName(customerEntity.getFirstName());
-        authorizedCustomerResponse.setLastName(customerEntity.getLastName());
-        authorizedCustomerResponse.setEmailAddress(customerEntity.getEmail());
-        authorizedCustomerResponse.setContactNumber(customerEntity.getContact_number());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("access-token", customerAuthTokenEntity.getAccessToken());
-        return new ResponseEntity<LoginResponse>(authorizedCustomerResponse, headers, HttpStatus.OK);
+      
+            //Attempting to decode the authorization string.
+            try {
+                byte[] decode1 = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
+            } catch(Exception e){
+                throw new AuthenticationFailedException("ATH-003", "Incorrect format of decoded customer name and password");
+            }
+            byte[] decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
+            System.out.println("DECODING DONE");
+            String decodedText = new String(decode);
+            System.out.println("DECODED TEXT IS " + decodedText);
+            String[] decodedArray = decodedText.split(":");
+            CustomerAuthTokenEntity customerAuthTokenEntity = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
+            CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
+            LoginResponse authorizedCustomerResponse = new LoginResponse().id(customerEntity.getUuid())
+                    .message("LOGGED IN SUCCESSFULLY");
+            authorizedCustomerResponse.setFirstName(customerEntity.getFirstName());
+            authorizedCustomerResponse.setLastName(customerEntity.getLastName());
+            authorizedCustomerResponse.setEmailAddress(customerEntity.getEmail());
+            authorizedCustomerResponse.setContactNumber(customerEntity.getContactNumber());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("access-token", customerAuthTokenEntity.getAccessToken());
+            return new ResponseEntity<LoginResponse>(authorizedCustomerResponse, headers, HttpStatus.OK);
+
 
     }
 

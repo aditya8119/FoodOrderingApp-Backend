@@ -67,7 +67,7 @@ public class CustomerDao {
                 .setParameter("accessToken", accessToken).getSingleResult();
         final ZonedDateTime now = ZonedDateTime.now();
 
-        Integer userId = customerAuthTokenEntity.getCustomer().getId();
+        Long userId = customerAuthTokenEntity.getCustomer().getId();
         customerAuthTokenEntity.setLogoutAt(now);
         entityManager.merge(customerAuthTokenEntity);
         CustomerEntity customerEntity = entityManager.createNamedQuery("customerById", CustomerEntity.class)
