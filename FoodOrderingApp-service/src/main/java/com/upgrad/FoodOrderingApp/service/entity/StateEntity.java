@@ -1,36 +1,42 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-@NamedQueries({
-        @NamedQuery(name = "getAllStates", query = "select s from StateEntity s"),
-        @NamedQuery(name = "getStateById", query = "select s from StateEntity s where s.uuid=:stateuuid")
-})
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "state")
-public class StateEntity {
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@NamedQueries(
+        {
+                @NamedQuery(name = "allStates", query = "select s from StateEntity s")
 
-    @Column(name = "UUID")
+        }
+)
+public class StateEntity {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "uuid")
+    @NotNull
     @Size(max = 200)
     private String uuid;
 
-    @Column(name = "STATE_NAME")
+    @Column(name = "state_name")
     @Size(max = 30)
-    private String state_name;
+    private String stateName;
 
-    public StateEntity(){}
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -42,11 +48,26 @@ public class StateEntity {
         this.uuid = uuid;
     }
 
-    public String getState_name() {
-        return state_name;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setState_name(String state_name) {
-        this.state_name = state_name;
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
     }
+
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+
+
+
+
 }
