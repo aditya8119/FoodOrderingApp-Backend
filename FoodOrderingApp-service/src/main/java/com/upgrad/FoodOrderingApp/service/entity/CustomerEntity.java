@@ -43,6 +43,7 @@ public class CustomerEntity implements Serializable {
     private String firstName;
 
     @Column(name = "lastname")
+    @NotNull
     private String lastName;
 
     @Column(name = "email")
