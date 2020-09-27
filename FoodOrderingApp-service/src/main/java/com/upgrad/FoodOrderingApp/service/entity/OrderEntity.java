@@ -9,7 +9,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "fetchAllOrders", query = "select o from OrderEntity o where o.customerEntity=:custEntity"),
         @NamedQuery(name = "fetchOrderByAddress", query = "select o from OrderEntity o where o.addressEntity=:addrEntity"),
-        @NamedQuery(name = "getOrdersByRestaurantId", query = "select o from OrderEntity o where  o.restaurantEntity=:restEntity")
+        @NamedQuery(name = "getOrdersByRestaurantId", query = "select o from OrderEntity o where  o.restaurantEntity=:restEntity"),
+        @NamedQuery(name = "fetchAllOrdersByDate", query = "select o from OrderEntity o where o.customerEntity=:custEntity order by o.date desc ")
 })
 
 @Entity
@@ -34,9 +35,9 @@ public class OrderEntity {
     @Column(name = "DATE")
     private ZonedDateTime date;
 
-//    @ManyToOne
-//    @JoinColumn(name = "COUPON_ID")
-//    private CouponEntity couponEntity;
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    private CouponEntity couponEntity;
 
     @OneToOne
     @JoinColumn(name = "PAYMENT_ID")
@@ -98,13 +99,13 @@ public class OrderEntity {
         this.date = date;
     }
 
-//    public CouponEntity getCouponEntity() {
-//        return couponEntity;
-//    }
-//
-//    public void setCouponEntity(CouponEntity couponEntity) {
-//        this.couponEntity = couponEntity;
-//    }
+    public CouponEntity getCouponEntity() {
+        return couponEntity;
+    }
+
+    public void setCouponEntity(CouponEntity couponEntity) {
+        this.couponEntity = couponEntity;
+    }
 
     public PaymentEntity getPaymentEntity() {
         return paymentEntity;
