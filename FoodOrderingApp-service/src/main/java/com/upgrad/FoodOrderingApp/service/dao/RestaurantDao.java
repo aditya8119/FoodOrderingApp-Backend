@@ -35,7 +35,7 @@ public class RestaurantDao {
 
     public CustomerAuthTokenEntity getUserAuthToken(final String accessToken) {
         try {
-            return entityManager.createNamedQuery("userAuthTokenByAccessToken", CustomerAuthTokenEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+            return entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class).setParameter("accessToken", accessToken).getSingleResult();
         } catch(NoResultException nre) {
             return null;
         }
