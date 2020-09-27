@@ -46,7 +46,7 @@ public class LogoutService {
             throws AuthorizationFailedException {
         CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
         if (customerAuthTokenEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer has not Logged In");
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
         }
         else if (customerAuthTokenEntity.getLogoutAt()!= null){
             throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
