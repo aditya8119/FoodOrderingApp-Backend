@@ -29,7 +29,6 @@ public class CustomerAddressDao {
                     .setParameter("uuid", uuid).getSingleResult();
 
 
-
             List<CustomerAddressEntity> customerAddressEntities = entityManager.createNamedQuery("customerAddressesListByCustomerId", CustomerAddressEntity.class)
                     .setParameter("customer", customerEntity.getId()).getResultList();
 
@@ -44,12 +43,9 @@ public class CustomerAddressDao {
             }
 
             List<AddressEntity> addressEntitiesList = entityManager.createNamedQuery("customerAddressEntities", AddressEntity.class)
-                    .setParameter("addressIds",ids).getResultList();
+                    .setParameter("addressIds", ids).getResultList();
 
-          /*  List<AddressEntity> addressEntitiesList = entityManager.createQuery(
-                    "SELECT a FROM AddressEntity a WHERE a.id in :addressIds AND a.active = 1 order by a.id desc", AddressEntity.class)
-                    .setParameter("addressIds", ids).getResultList();*/
-
+          
             return addressEntitiesList;
         } catch (NoResultException nre) {
             return null;
@@ -61,9 +57,9 @@ public class CustomerAddressDao {
     public CustomerAddressEntity getCustAddressByCustIdAddressId(final CustomerEntity customerEntity, final AddressEntity addressEntity) {
         try {
             return entityManager.createNamedQuery("custAddressByCustIdAddressId", CustomerAddressEntity.class)
-                    .setParameter("customer", customerEntity.getId()).setParameter( "address", addressEntity.getId())
+                    .setParameter("customer", customerEntity.getId()).setParameter("address", addressEntity.getId())
                     .getSingleResult();
-        } catch(NoResultException nre) {
+        } catch (NoResultException nre) {
             return null;
         }
     }
