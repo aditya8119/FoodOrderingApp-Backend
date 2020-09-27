@@ -3,6 +3,7 @@ package com.upgrad.FoodOrderingApp.api.controller;
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.AddressService;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
@@ -91,6 +92,7 @@ public class AddressController {
             StateEntity se = addressService.getStateById(ae.getStateEntity().getId());
             AddressListState addressListState = new AddressListState();
             addressListState.setStateName(se.getStateName());
+            addressListState.setId(UUID.fromString(se.getUuid()));
             AddressList addressList = new AddressList().id(UUID.fromString(ae.getUuid())).city(ae.getCity())
                     .flatBuildingName(ae.getFlat_buil_number()).locality(ae.getLocality())
                     .pincode(ae.getPincode()).state(addressListState);
@@ -98,4 +100,5 @@ public class AddressController {
         }
         return new ResponseEntity<>(addressListResponse, HttpStatus.OK);
     }
+
 }
