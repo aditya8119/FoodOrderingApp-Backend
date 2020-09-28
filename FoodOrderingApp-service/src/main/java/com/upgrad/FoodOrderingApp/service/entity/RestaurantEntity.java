@@ -92,7 +92,7 @@ public class RestaurantEntity {
         return restaurant_name;
     }
 
-    public void setRestaurant_name(String restaurant_name) {
+    public void setRestaurantName(String restaurant_name) {
         this.restaurant_name = restaurant_name;
     }
 
@@ -100,7 +100,7 @@ public class RestaurantEntity {
         return photo_url;
     }
 
-    public void setPhoto_url(String photo_url) {
+    public void setPhotoUrl(String photo_url) {
         this.photo_url = photo_url;
     }
 
@@ -108,15 +108,15 @@ public class RestaurantEntity {
         return customer_rating;
     }
 
-    public void setCustomer_rating(BigDecimal customer_rating) {
-        this.customer_rating = customer_rating;
+    public void setCustomerRating(double customer_rating) {
+        this.customer_rating = BigDecimal.valueOf(customer_rating);
     }
 
     public int getAverage_price_for_two() {
         return average_price_for_two;
     }
 
-    public void setAverage_price_for_two(int average_price_for_two) {
+    public void setAvgPrice(int average_price_for_two) {
         this.average_price_for_two = average_price_for_two;
     }
 
@@ -124,7 +124,7 @@ public class RestaurantEntity {
         return number_of_customers_rated;
     }
 
-    public void setNumber_of_customers_rated(int number_of_customers_rated) {
+    public void setNumberCustomersRated(int number_of_customers_rated) {
         this.number_of_customers_rated = number_of_customers_rated;
     }
 
@@ -132,7 +132,7 @@ public class RestaurantEntity {
         return addressEntity;
     }
 
-    public void setAddressEntity(AddressEntity addressEntity) {
+    public void setAddress(AddressEntity addressEntity) {
         this.addressEntity = addressEntity;
     }
 

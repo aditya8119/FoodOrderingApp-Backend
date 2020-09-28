@@ -35,6 +35,7 @@ public class StateEntity {
     @Size(max = 30)
     private String stateName;
 
+
     public Long getId() {
         return id;
     }
