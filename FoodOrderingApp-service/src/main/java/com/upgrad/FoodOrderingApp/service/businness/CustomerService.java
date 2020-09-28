@@ -168,9 +168,6 @@ public class CustomerService {
     @Transactional
     public CustomerEntity updateCustomerPassword(String oldPassword, String newPassword, CustomerEntity customerEntity) throws UpdateCustomerException{
 
-        if (oldPassword==null || newPassword==null){
-            throw new UpdateCustomerException("UCR-003","No field should be empty");
-        }
 
         String encryptedOldPassword =  cryptographyProvider.encrypt(oldPassword, customerEntity.getSalt());;
 

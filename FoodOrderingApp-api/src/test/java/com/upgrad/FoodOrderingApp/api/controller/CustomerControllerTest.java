@@ -196,26 +196,26 @@ public class CustomerControllerTest {
         verify(mockCustomerService, times(1)).authenticate("9090909090", "IncorrectPassword");
     }
 
-    // ----------------------------- POST /customer/logout --------------------------------
+//     ----------------------------- POST /customer/logout --------------------------------
 
-    //This test case passes when you are able to logout successfully.
-//    @Test
-//    public void shouldLogoutForValidRequest() throws Exception {
-//        final CustomerAuthTokenEntity createdCustomerAuthEntity = new CustomerAuthTokenEntity();
-//        final CustomerEntity customerEntity = new CustomerEntity();
-//        final String customerId = UUID.randomUUID().toString();
-//        customerEntity.setUuid(customerId);
-//        createdCustomerAuthEntity.setCustomer(customerEntity);
-//        when(mockCustomerService.logout("access-token")).thenReturn(createdCustomerAuthEntity);
-//
-//        mockMvc
-//                .perform(post("/customer/logout")
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                        .header("authorization", "Bearer access-token"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("id").value(customerId));
-//        verify(mockCustomerService, times(1)).logout("access-token");
-//    }
+//    This test case passes when you are able to logout successfully.
+    @Test
+    public void shouldLogoutForValidRequest() throws Exception {
+        final CustomerAuthEntity createdCustomerAuthEntity = new CustomerAuthEntity();
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
+        createdCustomerAuthEntity.setCustomer(customerEntity);
+        when(mockCustomerService.logout("access-token")).thenReturn(createdCustomerAuthEntity.getCustomer().getUuid());
+
+        mockMvc
+                .perform(post("/customer/logout")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .header("authorization", "Bearer access-token"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(customerId));
+        verify(mockCustomerService, times(1)).logout("access-token");
+    }
 
     //This test case passes when you have handled the exception of trying to logout without even logging in.
     @Test

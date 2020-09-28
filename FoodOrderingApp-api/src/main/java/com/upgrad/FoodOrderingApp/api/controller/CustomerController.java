@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
+import java.util.Objects;
 import java.util.UUID;
 
 @CrossOrigin
@@ -35,6 +36,14 @@ public class CustomerController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/customer/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupCustomerResponse> signup(final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
+
+        String validPasswordRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[#@$%&*!^]).{8,}$";
+
+
+        if (Objects.isNull(signupCustomerRequest.getContactNumber()) || Objects.isNull(signupCustomerRequest.getEmailAddress()) || Objects.isNull(signupCustomerRequest.getFirstName())|| Objects.isNull(signupCustomerRequest.getPassword())){
+            throw new SignUpRestrictedException("SGR-005", "Except last name all fields should be filled");
+        }
+
 
         final CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setUuid(UUID.randomUUID().toString());
@@ -63,14 +72,21 @@ public class CustomerController {
       
             //Attempting to decode the authorization string.
             try {
-                byte[] decode1 = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
+                byte[] decode1 = Base64.getDecoder().decode(authorization.split(" ")[1]);
+                String decodedText = new String(decode1);
+                Byte contactNumber=decode1[0];
+                String[] decodedArray1 = decodedText.split(":");
+                String testContactNumber = decodedArray1[0];
+                String testPassword = decodedArray1[1];
             } catch(Exception e){
                 throw new AuthenticationFailedException("ATH-003", "Incorrect format of decoded customer name and password");
             }
+            System.out.println("String to be decoded is " + authorization.split(" ")[1]);
             byte[] decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
-            System.out.println("DECODING DONE");
             String decodedText = new String(decode);
             System.out.println("DECODED TEXT IS " + decodedText);
+
+
             String[] decodedArray = decodedText.split(":");
             CustomerAuthEntity customerAuthTokenEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
             CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
@@ -120,11 +136,13 @@ public class CustomerController {
             final UpdateCustomerRequest updateCustomerRequest)
             throws UpdateCustomerException, AuthorizationFailedException{
 
-        CustomerEntity customerEntity =  customerService.getCustomer(authorization);
+        System.out.println(" PRINTING CUSTOMER FIRST NAME "+ updateCustomerRequest.getFirstName());
 
-        if(updateCustomerRequest.getFirstName()==null){
+        if(Objects.isNull(updateCustomerRequest.getFirstName())){
             throw new UpdateCustomerException("UCR-002","First name field should not be empty");
         }
+
+        CustomerEntity customerEntity =  customerService.getCustomer(authorization);
 
         customerEntity.setFirstName(updateCustomerRequest.getFirstName());
         customerEntity.setLastName(updateCustomerRequest.getLastName());
@@ -149,6 +167,14 @@ public class CustomerController {
     public ResponseEntity<UpdatePasswordResponse> updatePassword(
             @RequestHeader("authorization") final String authorization,
             final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
+
+        if(Objects.isNull(updatePasswordRequest.getOldPassword())){
+            throw new UpdateCustomerException("UCR-003","No field should be empty");
+        }
+
+        if(Objects.isNull(updatePasswordRequest.getNewPassword())){
+            throw new UpdateCustomerException("UCR-003","No field should be empty");
+        }
 
         CustomerEntity customerEntity = customerService.getCustomer(authorization);
 
