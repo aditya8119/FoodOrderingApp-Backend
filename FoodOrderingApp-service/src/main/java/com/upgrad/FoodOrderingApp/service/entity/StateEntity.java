@@ -59,6 +59,15 @@ public class StateEntity {
         this.stateName = stateName;
     }
 
+    public StateEntity(String stateUuid, String stateName) {
+        this.uuid = stateUuid;
+        this.stateName = stateName;
+        return;
+    }
+
+    public StateEntity() {
+
+    }
 
     @Override
     public int hashCode() {
@@ -69,5 +78,7 @@ public class StateEntity {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
+
+
 
 }

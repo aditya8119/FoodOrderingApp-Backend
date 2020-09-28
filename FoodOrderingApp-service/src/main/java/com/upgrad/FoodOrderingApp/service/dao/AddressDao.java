@@ -42,4 +42,9 @@ public class AddressDao {
         entityManager.merge(addressEntity);
         return addressEntity;
     }
+
+    public AddressEntity deleteAddress(AddressEntity addressEntity) {
+        entityManager.remove(addressEntity);
+        return addressEntity;
+    }
 }
