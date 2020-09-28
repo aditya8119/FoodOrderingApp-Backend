@@ -36,6 +36,10 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.POST, path = "/customer/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupCustomerResponse> signup(final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
 
+        if (signupCustomerRequest.getContactNumber()==null || signupCustomerRequest.getEmailAddress()==null ||signupCustomerRequest.getFirstName()==null||signupCustomerRequest.getPassword()==null){
+            throw new SignUpRestrictedException("SGR-005", "Except last name all fields should be filled");
+        }
+
         final CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setUuid(UUID.randomUUID().toString());
         customerEntity.setFirstName(signupCustomerRequest.getFirstName());
