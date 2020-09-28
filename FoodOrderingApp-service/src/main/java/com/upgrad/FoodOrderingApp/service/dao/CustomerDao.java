@@ -1,7 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
 
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import org.springframework.stereotype.Repository;
@@ -36,7 +36,7 @@ public class CustomerDao {
     }
 
     //create a new record in user_auth table
-    public CustomerAuthTokenEntity createAuthToken(final CustomerAuthTokenEntity customerAuthTokenEntity) {
+    public CustomerAuthEntity createAuthToken(final CustomerAuthEntity customerAuthTokenEntity) {
         entityManager.persist(customerAuthTokenEntity);
         return customerAuthTokenEntity;
     }
@@ -47,9 +47,9 @@ public class CustomerDao {
     }
 
     //Get Customer By AccessToken
-    public CustomerAuthTokenEntity getCustomerAuthToken(final String accessToken) {
+    public CustomerAuthEntity getCustomerAuthToken(final String accessToken) {
         try {
-            return entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+            return entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
@@ -57,7 +57,7 @@ public class CustomerDao {
     }
 
     //To update user Log Out Time
-    public CustomerAuthTokenEntity setUserLogout(final CustomerAuthTokenEntity customerAuthTokenEntity) {
+    public CustomerAuthEntity setUserLogout(final CustomerAuthEntity customerAuthTokenEntity) {
         entityManager.persist(customerAuthTokenEntity);
         return customerAuthTokenEntity;
     }
@@ -65,7 +65,7 @@ public class CustomerDao {
     //Signout function
     //Returns UUID of the signed out user
     public String logout(final String accessToken) throws AuthorizationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class)
+        CustomerAuthEntity customerAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthEntity.class)
                 .setParameter("accessToken", accessToken).getSingleResult();
         final ZonedDateTime now = ZonedDateTime.now();
 
@@ -79,7 +79,7 @@ public class CustomerDao {
 
     public boolean hasCustomerSignedIn(final String accessToken) {
         try {
-            CustomerAuthTokenEntity customerAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class)
+            CustomerAuthEntity customerAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthEntity.class)
                     .setParameter("accessToken", accessToken).getSingleResult();
             return true;
         } catch (NoResultException exception) {
@@ -88,9 +88,9 @@ public class CustomerDao {
 
     }
 
-    public CustomerAuthTokenEntity isValidActiveAuthToken(final String accessToken) throws AuthorizationFailedException {
+    public CustomerAuthEntity isValidActiveAuthToken(final String accessToken) throws AuthorizationFailedException {
 
-        CustomerAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class)
+        CustomerAuthEntity userAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthEntity.class)
                 .setParameter("accessToken", accessToken).getSingleResult();
         final ZonedDateTime now = ZonedDateTime.now();
         if (userAuthTokenEntity.getLogoutAt() == null) {
