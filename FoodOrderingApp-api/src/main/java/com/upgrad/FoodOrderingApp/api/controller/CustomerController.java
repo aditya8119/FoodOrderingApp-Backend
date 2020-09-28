@@ -1,17 +1,13 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
-import com.upgrad.FoodOrderingApp.api.model.LoginResponse;
-import com.upgrad.FoodOrderingApp.api.model.LogoutResponse;
-import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
-import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
-import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
-import com.upgrad.FoodOrderingApp.service.businness.LogoutService;
-import com.upgrad.FoodOrderingApp.service.businness.SignupService;
+import com.upgrad.FoodOrderingApp.api.model.*;
+import com.upgrad.FoodOrderingApp.service.businness.*;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
+import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,17 +23,11 @@ import java.util.UUID;
 @RequestMapping("/")
 public class CustomerController {
 
-    @Autowired
-    SignupService signupService;
 
     @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    LogoutService logoutService;
+    CustomerService customerService;
 
     /**
-     *
      * @param signupCustomerRequest User Details
      * @return Response Entity
      * @throws SignUpRestrictedException SGR-001 Try any other Username, this Username has already been taken, SGR-002 This user has already been registered, try with any other emailId
@@ -51,10 +41,10 @@ public class CustomerController {
         customerEntity.setFirstName(signupCustomerRequest.getFirstName());
         customerEntity.setLastName(signupCustomerRequest.getLastName());
         customerEntity.setEmail(signupCustomerRequest.getEmailAddress());
-        customerEntity.setContact_number(signupCustomerRequest.getContactNumber());
+        customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
         customerEntity.setPassword(signupCustomerRequest.getPassword());
 
-        final CustomerEntity createdCustomerEntity = signupService.signup(customerEntity);
+        final CustomerEntity createdCustomerEntity = customerService.saveCustomer(customerEntity);
         SignupCustomerResponse customerResponse = new SignupCustomerResponse().id(createdCustomerEntity.getUuid()).status("CUSTOMER SUCCESSFULLY REGISTERED");
 
         return new ResponseEntity<SignupCustomerResponse>(customerResponse, HttpStatus.CREATED);
@@ -62,7 +52,6 @@ public class CustomerController {
 
 
     /**
-     *
      * @param authorization Bearer Credentials encoded in Base64
      * @return ResponseEntity
      * @throws AuthenticationFailedException ATH-001 This username does not exist, ATH-002 Password failed
@@ -71,6 +60,7 @@ public class CustomerController {
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
 
         System.out.println("Authorization String is " + authorization);
+      
             //Attempting to decode the authorization string.
             try {
                 byte[] decode1 = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
@@ -82,17 +72,18 @@ public class CustomerController {
             String decodedText = new String(decode);
             System.out.println("DECODED TEXT IS " + decodedText);
             String[] decodedArray = decodedText.split(":");
-            CustomerAuthTokenEntity customerAuthTokenEntity = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
+            CustomerAuthTokenEntity customerAuthTokenEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
             CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
             LoginResponse authorizedCustomerResponse = new LoginResponse().id(customerEntity.getUuid())
                     .message("LOGGED IN SUCCESSFULLY");
             authorizedCustomerResponse.setFirstName(customerEntity.getFirstName());
             authorizedCustomerResponse.setLastName(customerEntity.getLastName());
             authorizedCustomerResponse.setEmailAddress(customerEntity.getEmail());
-            authorizedCustomerResponse.setContactNumber(customerEntity.getContact_number());
+            authorizedCustomerResponse.setContactNumber(customerEntity.getContactNumber());
             HttpHeaders headers = new HttpHeaders();
             headers.add("access-token", customerAuthTokenEntity.getAccessToken());
             return new ResponseEntity<LoginResponse>(authorizedCustomerResponse, headers, HttpStatus.OK);
+
 
     }
 
@@ -109,7 +100,7 @@ public class CustomerController {
     public ResponseEntity<LogoutResponse> logout(
             @RequestHeader("authorization") final String authorization)
             throws AuthorizationFailedException {
-        String customerUUID = logoutService.logout(authorization);
+        String customerUUID = customerService.logout(authorization);
 
         LogoutResponse logoutResponse = new LogoutResponse().id(customerUUID)
                 .message("LOGGED OUT SUCCESSFULLY");
@@ -118,5 +109,55 @@ public class CustomerController {
         headers.add("customer-uuid", customerUUID);
 
         return new ResponseEntity<LogoutResponse>(logoutResponse, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,
+            path = "/customer",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<UpdateCustomerResponse> updateCustomerDetails(
+            @RequestHeader("authorization") final String authorization,
+            final UpdateCustomerRequest updateCustomerRequest)
+            throws UpdateCustomerException, AuthorizationFailedException{
+
+        CustomerEntity customerEntity =  customerService.getCustomer(authorization);
+
+        if(updateCustomerRequest.getFirstName()==null){
+            throw new UpdateCustomerException("UCR-002","First name field should not be empty");
+        }
+
+        customerEntity.setFirstName(updateCustomerRequest.getFirstName());
+        customerEntity.setLastName(updateCustomerRequest.getLastName());
+
+        CustomerEntity updatedCustomer = customerService.updateCustomer(customerEntity);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("customer-uuid", updatedCustomer.getUuid());
+
+        UpdateCustomerResponse updateCustomerResponse = new UpdateCustomerResponse();
+        updateCustomerResponse.setFirstName(updatedCustomer.getFirstName());
+        updateCustomerResponse.setLastName(updatedCustomer.getLastName());
+        updateCustomerResponse.setStatus("CUSTOMER DETAILS UPDATED SUCCESSFULLY");
+
+        return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse,headers,HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,
+            path = "/customer/password",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(
+            @RequestHeader("authorization") final String authorization,
+            final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
+
+        CustomerEntity customerEntity = customerService.getCustomer(authorization);
+
+        CustomerEntity updatedCustomerEntity = customerService.updateCustomerPassword(updatePasswordRequest.getOldPassword(),updatePasswordRequest.getNewPassword(),customerEntity);
+
+        UpdatePasswordResponse updatePasswordResponse = new UpdatePasswordResponse();
+        updatePasswordResponse.setId(updatedCustomerEntity.getUuid());
+        updatePasswordResponse.setStatus("CUSTOMER PASSWORD UPDATED SUCCESSFULLY");
+
+        return new ResponseEntity<UpdatePasswordResponse>(updatePasswordResponse,HttpStatus.OK);
     }
 }

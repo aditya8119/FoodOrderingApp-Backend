@@ -12,7 +12,10 @@ import javax.validation.constraints.Size;
 @Table(name = "state")
 @NamedQueries(
         {
-                @NamedQuery(name = "allStates", query = "select s from StateEntity s")
+                @NamedQuery(name = "allStates", query = "select s from StateEntity s"),
+                @NamedQuery(name = "stateByUuid",query="select s from StateEntity s where s.uuid=:uuid"),
+                @NamedQuery(name = "stateById", query = "select s from StateEntity s where s.id=:id")
+
 
         }
 )
@@ -56,6 +59,15 @@ public class StateEntity {
         this.stateName = stateName;
     }
 
+    public StateEntity(String stateUuid, String stateName) {
+        this.uuid = stateUuid;
+        this.stateName = stateName;
+        return;
+    }
+
+    public StateEntity() {
+
+    }
 
     @Override
     public int hashCode() {
@@ -66,7 +78,6 @@ public class StateEntity {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
-
 
 
 

@@ -23,10 +23,12 @@ public class CustomerDao {
         return customerEntity;
     }
 
-    public CustomerEntity getCustomerByContact_number(final String contact_number) {
+    //Todo
+    public CustomerEntity getCustomerByContactNumber(final String contactNumber) {
         try {
-            return entityManager.createNamedQuery("customerByContact_number", CustomerEntity.class)
-                    .setParameter("contact_number", contact_number).getSingleResult();
+            //Todo
+            return entityManager.createNamedQuery("customerByContactNumber", CustomerEntity.class)
+                    .setParameter("contactNumber", contactNumber).getSingleResult();
         } catch (NoResultException exc) {
             return null;
         }
@@ -39,8 +41,9 @@ public class CustomerDao {
         return customerAuthTokenEntity;
     }
 
-    public void updateCustomer(final CustomerEntity updatedCustomerEntity) {
+    public CustomerEntity updateCustomer(final CustomerEntity updatedCustomerEntity) {
         entityManager.merge(updatedCustomerEntity);
+        return updatedCustomerEntity;
     }
 
     //Get Customer By AccessToken
@@ -66,7 +69,7 @@ public class CustomerDao {
                 .setParameter("accessToken", accessToken).getSingleResult();
         final ZonedDateTime now = ZonedDateTime.now();
 
-        Integer userId = customerAuthTokenEntity.getCustomer().getId();
+        Long userId = customerAuthTokenEntity.getCustomer().getId();
         customerAuthTokenEntity.setLogoutAt(now);
         entityManager.merge(customerAuthTokenEntity);
         CustomerEntity customerEntity = entityManager.createNamedQuery("customerById", CustomerEntity.class)
@@ -87,14 +90,24 @@ public class CustomerDao {
 
     public CustomerAuthTokenEntity isValidActiveAuthToken(final String accessToken) throws AuthorizationFailedException {
 
-            CustomerAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class)
-                    .setParameter("accessToken", accessToken).getSingleResult();
-            final ZonedDateTime now = ZonedDateTime.now();
-            if (userAuthTokenEntity.getLogoutAt() == null) {
-                return userAuthTokenEntity;
-            }
-            //Here there is an else part to add various actions
+        CustomerAuthTokenEntity userAuthTokenEntity = entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class)
+                .setParameter("accessToken", accessToken).getSingleResult();
+        final ZonedDateTime now = ZonedDateTime.now();
+        if (userAuthTokenEntity.getLogoutAt() == null) {
+            return userAuthTokenEntity;
+        }
+        //Here there is an else part to add various actions
         return userAuthTokenEntity;
+    }
+
+    public CustomerEntity getCustomerById(final Integer id) {
+        try {
+            return entityManager.createNamedQuery("customerById", CustomerEntity.class)
+                    .setParameter("id", id).getSingleResult();
+        } catch (NoResultException exc) {
+            return null;
+        }
+
     }
 }
 
