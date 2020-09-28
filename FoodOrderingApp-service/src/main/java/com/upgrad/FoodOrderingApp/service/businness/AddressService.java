@@ -74,7 +74,7 @@ public class AddressService {
 
         addressEntity = addressDao.createAddress(addressEntity);
 
-        CustomerAuthTokenEntity customerAuthTokenEntity = customerDao.getCustomerAuthToken(bearerToken);
+        CustomerAuthEntity customerAuthTokenEntity = customerDao.getCustomerAuthToken(bearerToken);
 
         final CustomerAddressEntity customerAddressEntity = new CustomerAddressEntity();
 

@@ -1,7 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class AuthorizationService {
      * @return authorized customer entity
      * @throws AuthorizationFailedException
      */
-    public CustomerAuthTokenEntity isValidActiveAuthToken(final String authorization) throws AuthorizationFailedException {
+    public CustomerAuthEntity isValidActiveAuthToken(final String authorization) throws AuthorizationFailedException {
         return customerDao.isValidActiveAuthToken(authorization);
     }
 
@@ -46,15 +46,15 @@ public class AuthorizationService {
      * @return Auhorized user entity
      * @throws AuthorizationFailedException
      */
-    public CustomerAuthTokenEntity fetchAuthTokenEntity(final String authorization) throws AuthorizationFailedException {
-        final CustomerAuthTokenEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
+    public CustomerAuthEntity fetchAuthTokenEntity(final String authorization) throws AuthorizationFailedException {
+        final CustomerAuthEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
         return fetchedCustomerAuthTokenEntity;
     }
 
     @Transactional
     public void validateAccessToken(final String authorizationToken) throws AuthorizationFailedException {
 
-        CustomerAuthTokenEntity customerAuthTokenEntity = customerDao.getCustomerAuthToken(authorizationToken);
+        CustomerAuthEntity customerAuthTokenEntity = customerDao.getCustomerAuthToken(authorizationToken);
         final ZonedDateTime now = ZonedDateTime.now();
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
@@ -67,7 +67,7 @@ public class AuthorizationService {
     }
 
     @Transactional
-    public CustomerAuthTokenEntity getCustomerAuthToken(final String accessToken) {
+    public CustomerAuthEntity getCustomerAuthToken(final String accessToken) {
         return customerDao.getCustomerAuthToken(accessToken);
     }
 }
