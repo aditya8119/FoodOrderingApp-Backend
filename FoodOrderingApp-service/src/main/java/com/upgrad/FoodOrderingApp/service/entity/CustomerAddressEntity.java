@@ -9,6 +9,7 @@ import javax.persistence.*;
                 @NamedQuery(name = "customerAddressByAddressId", query = "select ca from CustomerAddressEntity ca where ca.id=:id"),
                 @NamedQuery(name = "customerAddressesListByCustomerId", query = "select ca from CustomerAddressEntity ca where ca.customerId = :customer"),
                 @NamedQuery(name = "custAddressByCustIdAddressId", query = "select ca from CustomerAddressEntity ca where ca.customerId=:customer and ca.addressId=:address")
+
         }
 )
 

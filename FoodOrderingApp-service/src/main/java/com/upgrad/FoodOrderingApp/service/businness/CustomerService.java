@@ -132,9 +132,17 @@ public class CustomerService {
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerEntity getCustomer(final String authorization) throws AuthorizationFailedException {
 
-        String[] splitToken = authorization.split(" ");
-        String accessToken = splitToken[1];
-        System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
+       // String[] splitToken = authorization.split(" ");
+       // String accessToken = splitToken[1];
+       // System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
+        String accessToken;
+        if (authorization.contains("Bearer ")){
+            String[] splitToken = authorization.split(" ");
+            accessToken = splitToken[1];
+            System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
+        } else {
+            accessToken = authorization;
+        }
         CustomerAuthTokenEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");

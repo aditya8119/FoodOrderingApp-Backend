@@ -68,11 +68,11 @@ public class AddressEntity {
         this.customer = customer;
     }
 
-    public StateEntity getStateEntity() {
+    public StateEntity getState() {
         return stateEntity;
     }
 
-    public void setStateEntity(StateEntity stateEntity) {
+    public void setState(StateEntity stateEntity) {
         this.stateEntity = stateEntity;
     }
 
@@ -92,11 +92,11 @@ public class AddressEntity {
         this.uuid = uuid;
     }
 
-    public String getFlat_buil_number() {
+    public String getFlatBuilNo() {
         return flat_buil_number;
     }
 
-    public void setFlat_buil_number(String flat_buil_number) {
+    public void setFlatBuilNo(String flat_buil_number) {
         this.flat_buil_number = flat_buil_number;
     }
 

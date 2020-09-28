@@ -92,13 +92,13 @@ public class OrderController {
             AddressEntity address=order.getAddressEntity();
             OrderListAddress orderAddress=new OrderListAddress();
             orderAddress.setCity(address.getCity());
-            orderAddress.setFlatBuildingName(address.getFlat_buil_number());
+            orderAddress.setFlatBuildingName(address.getFlatBuilNo());
             orderAddress.setId(UUID.fromString(address.getUuid()));
             orderAddress.setLocality(address.getLocality());
             orderAddress.setPincode(address.getPincode());
             OrderListAddressState orderState=new OrderListAddressState();
-            orderState.setId(UUID.fromString(address.getStateEntity().getUuid()));
-            orderState.setStateName(address.getStateEntity().getStateName());
+            orderState.setId(UUID.fromString(address.getState().getUuid()));
+            orderState.setStateName(address.getState().getStateName());
             orderAddress.setState(orderState);
             orderList.setAddress(orderAddress);
             CouponEntity coupon=order.getCouponEntity();
