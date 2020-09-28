@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +42,7 @@ public class OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public List<CouponEntity> getCouponByName(String authorization,String couponName) throws CouponNotFoundException, AuthorizationFailedException, AuthenticationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
+        CustomerAuthEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
         }
@@ -71,7 +68,7 @@ public class OrderService {
     //Save Order DAO
     @Transactional(propagation = Propagation.REQUIRED)
     public OrderEntity saveOrder(String authorization,OrderEntity orderEntity, List<OrderItemEntity> orderItemList) throws CouponNotFoundException, AddressNotFoundException, ItemNotFoundException, RestaurantNotFoundException, PaymentMethodNotFoundException, AuthorizationFailedException, AuthenticationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
+        CustomerAuthEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
         }
@@ -125,7 +122,7 @@ public class OrderService {
     //Get Orders Placed
     @Transactional(propagation = Propagation.REQUIRED)
     public List<OrderEntity> getOrderByAuth(String authorization) throws CouponNotFoundException, AuthorizationFailedException, AuthenticationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
+        CustomerAuthEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
         }

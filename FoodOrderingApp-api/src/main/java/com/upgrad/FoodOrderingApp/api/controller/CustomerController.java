@@ -1,8 +1,8 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
-import com.upgrad.FoodOrderingApp.service.businness.*;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
@@ -72,7 +72,7 @@ public class CustomerController {
             String decodedText = new String(decode);
             System.out.println("DECODED TEXT IS " + decodedText);
             String[] decodedArray = decodedText.split(":");
-            CustomerAuthTokenEntity customerAuthTokenEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
+            CustomerAuthEntity customerAuthTokenEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
             CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
             LoginResponse authorizedCustomerResponse = new LoginResponse().id(customerEntity.getUuid())
                     .message("LOGGED IN SUCCESSFULLY");

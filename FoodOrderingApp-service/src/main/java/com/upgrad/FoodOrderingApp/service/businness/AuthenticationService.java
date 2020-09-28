@@ -1,7 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class AuthenticationService {
      *                                       Password Failed
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerAuthTokenEntity authenticate(final String contactNumber, final String password)
+    public CustomerAuthEntity authenticate(final String contactNumber, final String password)
             throws AuthenticationFailedException {
         //Todo4
         CustomerEntity customerEntity = customerDao.getCustomerByContactNumber(contactNumber);
@@ -46,7 +46,7 @@ public class AuthenticationService {
         final String encryptedPassword = cryptographyProvider.encrypt(password, customerEntity.getSalt());
         if (encryptedPassword.equals(customerEntity.getPassword())) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
-            CustomerAuthTokenEntity customerAuthToken = new CustomerAuthTokenEntity();
+            CustomerAuthEntity customerAuthToken = new CustomerAuthEntity();
             customerAuthToken.setCustomer(customerEntity);
             final ZonedDateTime now = ZonedDateTime.now();
             final ZonedDateTime expiresAt = now.plusHours(8);

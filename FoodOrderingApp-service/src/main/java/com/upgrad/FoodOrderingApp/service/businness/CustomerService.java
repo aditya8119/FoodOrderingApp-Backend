@@ -1,7 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
@@ -66,7 +66,7 @@ public class CustomerService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerAuthTokenEntity authenticate(String contactNumber, String password) throws AuthenticationFailedException {
+    public CustomerAuthEntity authenticate(String contactNumber, String password) throws AuthenticationFailedException {
         CustomerEntity customerEntity = customerDao.getCustomerByContactNumber(contactNumber);
         if (customerEntity == null) {
             throw new AuthenticationFailedException("ATH-003", "This contact number has not been registered!");
@@ -79,7 +79,7 @@ public class CustomerService {
         final String encryptedPassword = cryptographyProvider.encrypt(password, customerEntity.getSalt());
         if (encryptedPassword.equals(customerEntity.getPassword())) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
-            CustomerAuthTokenEntity customerAuthToken = new CustomerAuthTokenEntity();
+            CustomerAuthEntity customerAuthToken = new CustomerAuthEntity();
             customerAuthToken.setCustomer(customerEntity);
             final ZonedDateTime now = ZonedDateTime.now();
             final ZonedDateTime expiresAt = now.plusHours(8);
@@ -105,7 +105,7 @@ public class CustomerService {
         String accessToken = splitToken[1];
         System.out.println("ACCESS TOKEN IN VALIDATE CUSTOMER IS " + splitToken[1]);
 
-        CustomerAuthTokenEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
+        CustomerAuthEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
         }
@@ -124,8 +124,8 @@ public class CustomerService {
         return customerDao.logout(accessToken);
     }
 
-    public CustomerAuthTokenEntity fetchAuthTokenEntity(final String authorization) throws AuthorizationFailedException {
-        final CustomerAuthTokenEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
+    public CustomerAuthEntity fetchAuthTokenEntity(final String authorization) throws AuthorizationFailedException {
+        final CustomerAuthEntity fetchedCustomerAuthTokenEntity = customerDao.getCustomerAuthToken(authorization);
         return fetchedCustomerAuthTokenEntity;
     }
 
@@ -143,7 +143,7 @@ public class CustomerService {
         } else {
             accessToken = authorization;
         }
-        CustomerAuthTokenEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
+        CustomerAuthEntity customerAuthTokenEntity = fetchAuthTokenEntity(accessToken);
         if (customerAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged In");
         }
