@@ -31,8 +31,7 @@ public class ItemService {
         return itemDao.getOrdersByRestaurant(restaurantEntity);
     }
 
-    public List<ItemEntity> getMostPopularItems(String resId) throws RestaurantNotFoundException {
-        RestaurantEntity restaurantEntity = restaurantDao.getRestaurantById(resId);
+    public List<ItemEntity> getItemsByPopularity(RestaurantEntity restaurantEntity) throws RestaurantNotFoundException {
         if(restaurantEntity==null)
             throw new RestaurantNotFoundException("RNF-001","No restaurant by this id");
         return itemDao.getPopularOrders(restaurantEntity);
