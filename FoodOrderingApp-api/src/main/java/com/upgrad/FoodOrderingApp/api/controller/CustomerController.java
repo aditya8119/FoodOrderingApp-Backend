@@ -23,8 +23,6 @@ import java.util.UUID;
 @RequestMapping("/")
 public class CustomerController {
 
-    @Autowired
-    SignupService signupService;
 
     @Autowired
     AuthenticationService authenticationService;
@@ -37,6 +35,9 @@ public class CustomerController {
 
     @Autowired
     UpdatePasswordService updatePasswordService;
+
+    @Autowired
+    CustomerService customerService;
 
     /**
      * @param signupCustomerRequest User Details
@@ -55,7 +56,7 @@ public class CustomerController {
         customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
         customerEntity.setPassword(signupCustomerRequest.getPassword());
 
-        final CustomerEntity createdCustomerEntity = signupService.signup(customerEntity);
+        final CustomerEntity createdCustomerEntity = customerService.saveCustomer(customerEntity);
         SignupCustomerResponse customerResponse = new SignupCustomerResponse().id(createdCustomerEntity.getUuid()).status("CUSTOMER SUCCESSFULLY REGISTERED");
 
         return new ResponseEntity<SignupCustomerResponse>(customerResponse, HttpStatus.CREATED);
@@ -83,7 +84,7 @@ public class CustomerController {
             String decodedText = new String(decode);
             System.out.println("DECODED TEXT IS " + decodedText);
             String[] decodedArray = decodedText.split(":");
-            CustomerAuthTokenEntity customerAuthTokenEntity = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
+            CustomerAuthTokenEntity customerAuthTokenEntity = customerService.authenticate(decodedArray[0], decodedArray[1]);
             CustomerEntity customerEntity = customerAuthTokenEntity.getCustomer();
             LoginResponse authorizedCustomerResponse = new LoginResponse().id(customerEntity.getUuid())
                     .message("LOGGED IN SUCCESSFULLY");
@@ -111,7 +112,7 @@ public class CustomerController {
     public ResponseEntity<LogoutResponse> logout(
             @RequestHeader("authorization") final String authorization)
             throws AuthorizationFailedException {
-        String customerUUID = logoutService.logout(authorization);
+        String customerUUID = customerService.logout(authorization);
 
         LogoutResponse logoutResponse = new LogoutResponse().id(customerUUID)
                 .message("LOGGED OUT SUCCESSFULLY");
@@ -131,7 +132,7 @@ public class CustomerController {
             final UpdateCustomerRequest updateCustomerRequest)
             throws UpdateCustomerException, AuthorizationFailedException{
 
-        CustomerEntity customerEntity = updateService.validateCustomer(authorization);
+        CustomerEntity customerEntity =  customerService.getCustomer(authorization);
 
         if(updateCustomerRequest.getFirstName()==null){
             throw new UpdateCustomerException("UCR-002","First name field should not be empty");
@@ -140,7 +141,7 @@ public class CustomerController {
         customerEntity.setFirstName(updateCustomerRequest.getFirstName());
         customerEntity.setLastName(updateCustomerRequest.getLastName());
 
-        CustomerEntity updatedCustomer = updateService.updateCustomerData(customerEntity);
+        CustomerEntity updatedCustomer = customerService.updateCustomer(customerEntity);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("customer-uuid", updatedCustomer.getUuid());
@@ -161,9 +162,9 @@ public class CustomerController {
             @RequestHeader("authorization") final String authorization,
             final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
 
-        CustomerEntity customerEntity = updateService.validateCustomer(authorization);
+        CustomerEntity customerEntity = customerService.getCustomer(authorization);
 
-        CustomerEntity updatedCustomerEntity = updatePasswordService.updatePassword(customerEntity,updatePasswordRequest.getOldPassword(),updatePasswordRequest.getNewPassword());
+        CustomerEntity updatedCustomerEntity = customerService.updateCustomerPassword(updatePasswordRequest.getOldPassword(),updatePasswordRequest.getNewPassword(),customerEntity);
 
         UpdatePasswordResponse updatePasswordResponse = new UpdatePasswordResponse();
         updatePasswordResponse.setId(updatedCustomerEntity.getUuid());
