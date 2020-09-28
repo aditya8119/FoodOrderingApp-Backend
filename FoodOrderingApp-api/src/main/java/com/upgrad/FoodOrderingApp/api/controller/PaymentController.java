@@ -26,7 +26,7 @@ public class PaymentController {
     @CrossOrigin
     @RequestMapping(method=RequestMethod.GET,value="/payment",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<PaymentListResponse> retrievePaymentMethods(){
-        List<PaymentEntity> paymentEntities = paymentService.fetchAllPaymentMethods();
+        List<PaymentEntity> paymentEntities = paymentService.getAllPaymentMethods();
         PaymentListResponse response = new PaymentListResponse();
         for(PaymentEntity paymentEntity: paymentEntities) {
             response.addPaymentMethodsItem(new PaymentResponse().id(UUID.fromString(paymentEntity.getUuid())).paymentName(paymentEntity.getPaymentName()));
