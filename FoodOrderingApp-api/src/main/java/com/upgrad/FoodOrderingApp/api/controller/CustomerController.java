@@ -25,18 +25,6 @@ public class CustomerController {
 
 
     @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    LogoutService logoutService;
-
-    @Autowired
-    UpdateCustomerService updateService;
-
-    @Autowired
-    UpdatePasswordService updatePasswordService;
-
-    @Autowired
     CustomerService customerService;
 
     /**
