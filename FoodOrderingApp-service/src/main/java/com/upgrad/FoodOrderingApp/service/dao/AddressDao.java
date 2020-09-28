@@ -37,4 +37,9 @@ public class AddressDao {
         }
 
     }
+
+    public AddressEntity updateAddressActiveStatus(AddressEntity addressEntity) {
+        entityManager.merge(addressEntity);
+        return addressEntity;
+    }
 }
