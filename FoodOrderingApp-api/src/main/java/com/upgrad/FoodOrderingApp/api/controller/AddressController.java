@@ -2,7 +2,6 @@ package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.AddressService;
-import com.upgrad.FoodOrderingApp.service.businness.LogoutService;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
@@ -26,8 +25,7 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    @Autowired
-    private LogoutService logoutService;
+
 
     @RequestMapping(method = RequestMethod.GET, path = "/states", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<StatesListResponse> getAllStates() {
