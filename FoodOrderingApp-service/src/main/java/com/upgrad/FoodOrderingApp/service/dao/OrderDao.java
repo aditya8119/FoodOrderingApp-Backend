@@ -33,9 +33,9 @@ public class OrderDao {
     }
 
     //Get Order Dao
-    public List<OrderEntity> getOrderByAuth(CustomerEntity custEntity){
+    public List<OrderEntity> getOrderByAuth(String customerId){
         try {
-            return entityManager.createNamedQuery("fetchAllOrdersByDate", OrderEntity.class).setParameter("custEntity", custEntity).getResultList();
+            return entityManager.createNamedQuery("fetchAllOrdersByDate", OrderEntity.class).setParameter("customerId", customerId).getResultList();
 
         }catch (NoResultException nre){
             return null;

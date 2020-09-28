@@ -222,7 +222,7 @@ public class RestaurantController {
         } catch (ArrayIndexOutOfBoundsException e) {
             bearerToken = authorization;
         }
-        restaurantEntity.setCustomer_rating(BigDecimal.valueOf(customerRating));
+        restaurantEntity.setCustomerRating(customerRating);
         RestaurantEntity updatedRestaurantEntity = restaurantService.updateRestaurantDetails(restaurantEntity,bearerToken);
         RestaurantUpdatedResponse restUpdateResponse = new RestaurantUpdatedResponse()
                 .id(UUID.fromString(updatedRestaurantEntity.getUuid()))

@@ -65,15 +65,27 @@ public class RestaurantService {
         }
         int numOfCustomersRated = existingRestaurantEntity.getNumber_of_customers_rated() + 1;
         BigDecimal avgCustRating = existingRestaurantEntity.getCustomer_rating().add(restaurantEntity.getCustomer_rating()).divide(new BigDecimal(2));
-        restaurantEntity.setCustomer_rating(avgCustRating);
-        restaurantEntity.setNumber_of_customers_rated(numOfCustomersRated);
-        restaurantEntity.setAddressEntity(existingRestaurantEntity.getAddressEntity());
-        restaurantEntity.setAverage_price_for_two(existingRestaurantEntity.getAverage_price_for_two());
+        restaurantEntity.setCustomerRating(avgCustRating.doubleValue());
+        restaurantEntity.setNumberCustomersRated(numOfCustomersRated);
+        restaurantEntity.setAddress(existingRestaurantEntity.getAddressEntity());
+        restaurantEntity.setAvgPrice(existingRestaurantEntity.getAverage_price_for_two());
         restaurantEntity.setId(existingRestaurantEntity.getId());
-        restaurantEntity.setPhoto_url(existingRestaurantEntity.getPhoto_url());
+        restaurantEntity.setPhotoUrl(existingRestaurantEntity.getPhoto_url());
         restaurantEntity.setCategories(existingRestaurantEntity.getCategories());
-        restaurantEntity.setRestaurant_name(existingRestaurantEntity.getRestaurant_name());
+        restaurantEntity.setRestaurantName(existingRestaurantEntity.getRestaurant_name());
         return restaurantDao.updateRestaurantDetails(restaurantEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public RestaurantEntity restaurantByUUID(String restUuid) throws RestaurantNotFoundException {
+
+        RestaurantEntity restEntity = restaurantDao.getRestaurantById(restUuid);
+        if(restEntity == null) {
+            throw new RestaurantNotFoundException("RNF-001","No restaurant by this id");
+        } else {
+            return restEntity;
+        }
+
     }
 
 }

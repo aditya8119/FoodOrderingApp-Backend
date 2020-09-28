@@ -4,13 +4,14 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 @NamedQueries({
         @NamedQuery(name = "fetchAllOrders", query = "select o from OrderEntity o where o.customerEntity=:custEntity"),
         @NamedQuery(name = "fetchOrderByAddress", query = "select o from OrderEntity o where o.addressEntity=:addrEntity"),
         @NamedQuery(name = "getOrdersByRestaurantId", query = "select o from OrderEntity o where  o.restaurantEntity=:restEntity"),
-        @NamedQuery(name = "fetchAllOrdersByDate", query = "select o from OrderEntity o where o.customerEntity=:custEntity order by o.date desc ")
+        @NamedQuery(name = "fetchAllOrdersByDate", query = "select o from OrderEntity o where o.customerEntity.uuid=:customerId order by o.date desc ")
 })
 
 @Entity
@@ -33,7 +34,7 @@ public class OrderEntity {
     private BigDecimal discount;
 
     @Column(name = "DATE")
-    private ZonedDateTime date;
+    private Date date;
 
     @ManyToOne
     @JoinColumn(name = "coupon_id")
@@ -58,6 +59,22 @@ public class OrderEntity {
 
     @OneToMany(mappedBy="orderEntity")
     private List<OrderItemEntity> orderItem;
+
+    public OrderEntity(String orderId, double v, CouponEntity couponEntity, double v1, Date orderDate, PaymentEntity paymentEntity, CustomerEntity customerEntity, AddressEntity addressEntity, RestaurantEntity restaurantEntity) {
+        this.uuid=orderId;
+        this.couponEntity=couponEntity;
+        this.date=orderDate;
+        this.bill=BigDecimal.valueOf(v);
+        this.discount=BigDecimal.valueOf(v1);
+        this.paymentEntity=paymentEntity;
+        this.customerEntity=customerEntity;
+        this.addressEntity=addressEntity;
+        this.restaurantEntity=restaurantEntity;
+    }
+
+    public OrderEntity() {
+
+    }
 
     public int getId() {
         return id;
@@ -91,11 +108,11 @@ public class OrderEntity {
         this.discount = discount;
     }
 
-    public ZonedDateTime getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(ZonedDateTime date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -115,7 +132,7 @@ public class OrderEntity {
         this.paymentEntity = paymentEntity;
     }
 
-    public CustomerEntity getCustomerEntity() {
+    public CustomerEntity getCustomer() {
         return customerEntity;
     }
 
@@ -131,7 +148,7 @@ public class OrderEntity {
         this.restaurantEntity = restaurantEntity;
     }
 
-    public AddressEntity getAddressEntity() {
+    public AddressEntity getAddress() {
         return addressEntity;
     }
 

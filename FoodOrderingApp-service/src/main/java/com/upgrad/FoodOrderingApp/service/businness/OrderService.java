@@ -44,18 +44,8 @@ public class OrderService {
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<CouponEntity> getCouponByName(String authorization,String couponName) throws CouponNotFoundException, AuthorizationFailedException, AuthenticationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
-        if (customerAuthTokenEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
-        }
-        else if (customerAuthTokenEntity.getLogoutAt()!= null){
-            throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
-        }
-        else if(customerAuthTokenEntity.getExpiresAt().isBefore(ZonedDateTime.now()))
-        {
-            throw new AuthenticationFailedException("ATHR-003" , "Your session is expired. Log in again to access this endpoint.");
-        }
+    public CouponEntity getCouponByCouponName(String couponName) throws CouponNotFoundException {
+
         if(couponName.equals("")){
             throw new CouponNotFoundException("CPF-002","Coupon name field should not be empty");
         }
@@ -63,80 +53,30 @@ public class OrderService {
         if(couponEntityList.size()<=0){
             throw new CouponNotFoundException("CPF-001","No coupon by this name");
         }
-        return couponEntityList;
+        return couponEntityList.get(0);
     }
 
 
 
     //Save Order DAO
     @Transactional(propagation = Propagation.REQUIRED)
-    public OrderEntity saveOrder(String authorization,OrderEntity orderEntity, List<OrderItemEntity> orderItemList) throws CouponNotFoundException, AddressNotFoundException, ItemNotFoundException, RestaurantNotFoundException, PaymentMethodNotFoundException, AuthorizationFailedException, AuthenticationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
-        if (customerAuthTokenEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
-        }
-        else if (customerAuthTokenEntity.getLogoutAt()!= null){
-            throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
-        }
-        else if(customerAuthTokenEntity.getExpiresAt().isBefore(ZonedDateTime.now()))
-        {
-            throw new AuthenticationFailedException("ATHR-003" , "Your session is expired. Log in again to access this endpoint.");
-        }
+    public OrderEntity saveOrder(OrderEntity orderEntity){
 
-        CouponEntity coupon=couponDao.getCouponById(orderEntity.getCouponEntity().getUuid());
-        if(coupon==null)
-        {
-            throw new CouponNotFoundException("CPF-002","No coupon by this id");
-        }
-        AddressEntity address=addressDao.getAddressById(orderEntity.getAddressEntity().getUuid());
-        if(address==null){
-            throw new AddressNotFoundException("ANF-003","No address by this id");
-        }
-        PaymentEntity payment=paymentDao.getPaymentById(orderEntity.getPaymentEntity().getUuid());
-        if(payment==null){
-            throw new PaymentMethodNotFoundException("PNF-002","PaymentMethodNotFoundException");
-        }
-        RestaurantEntity restaurant=restaurantDao.getRestaurantById(orderEntity.getRestaurantEntity().getUuid());
-        if(restaurant==null){
-            throw new RestaurantNotFoundException("RNF-001","No restaurant by this id");
-        }
-        for(OrderItemEntity i:orderItemList){
-            ItemEntity item=itemDao.getItemEntityById(i.getItemEntity().getUuid());
-            if(item==null){
-                throw new ItemNotFoundException("INF-003","No item by this id exist");
-            }
-            i.setItemEntity(item);
-        }
-        orderEntity.setCouponEntity(coupon);
-        orderEntity.setRestaurantEntity(restaurant);
-        orderEntity.setPaymentEntity(payment);
-        orderEntity.setAddressEntity(address);
-        orderEntity.setCustomerEntity(customerAuthTokenEntity.getCustomer());
-        orderEntity.setUuid(UUID.randomUUID().toString());
-        orderEntity.setDate(ZonedDateTime.now());
         OrderEntity persistOrder=orderDao.saveOrder(orderEntity);
-        for(OrderItemEntity i:orderItemList){
-            i.setOrderEntity(persistOrder);
-            orderDao.saveOrderItem(i);
-        }
         return persistOrder;
+    }
+
+    //Save Order Item
+    @Transactional(propagation = Propagation.REQUIRED)
+    public OrderItemEntity saveOrderItem(OrderItemEntity orderItem){
+        return orderDao.saveOrderItem(orderItem);
     }
 
     //Get Orders Placed
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<OrderEntity> getOrderByAuth(String authorization) throws CouponNotFoundException, AuthorizationFailedException, AuthenticationFailedException {
-        CustomerAuthTokenEntity customerAuthTokenEntity = authorizationService.fetchAuthTokenEntity(authorization);
-        if (customerAuthTokenEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
-        }
-        else if (customerAuthTokenEntity.getLogoutAt()!= null){
-            throw new AuthorizationFailedException("ATHR-002" , "Customer is logged out. Log in again to access this endpoint.");
-        }
-        else if(customerAuthTokenEntity.getExpiresAt().isBefore(ZonedDateTime.now()))
-        {
-            throw new AuthenticationFailedException("ATHR-003" , "Your session is expired. Log in again to access this endpoint.");
-        }
-        return orderDao.getOrderByAuth(customerAuthTokenEntity.getCustomer());
+    public List<OrderEntity> getOrdersByCustomers(String customerId) {
+
+        return orderDao.getOrderByAuth(customerId);
     }
 
     //Get items by order Placed
@@ -145,4 +85,15 @@ public class OrderService {
 
         return orderDao.getItemsByOrder(orderEntity);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CouponEntity getCouponByCouponId(String uuid) throws CouponNotFoundException {
+        CouponEntity coupon = couponDao.getCouponById(uuid);
+        if(coupon == null) {
+            throw new CouponNotFoundException("CPF-002","No coupon by this id");
+        } else {
+            return coupon;
+        }
+    }
+
 }

@@ -33,6 +33,15 @@ public class PaymentEntity {
     @Column(name = "payment_name")
     private String paymentName;
 
+    public PaymentEntity(String paymentId, String spmePayment) {
+        this.uuid=paymentId;
+        this.paymentName=spmePayment;
+    }
+
+    public PaymentEntity() {
+
+    }
+
     public Integer getId() {
         return id;
     }

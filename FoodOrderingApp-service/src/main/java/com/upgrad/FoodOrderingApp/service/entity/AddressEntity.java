@@ -57,6 +57,19 @@ public class AddressEntity {
     @JoinColumn(name = "STATE_ID")
     private StateEntity stateEntity;
 
+    public AddressEntity(String addressId, String s, String someLocality, String someCity, String s1, StateEntity stateEntity) {
+        this.uuid=addressId;
+        this.flat_buil_number=s;
+        this.locality=someLocality;
+        this.city=someCity;
+        this.stateEntity=stateEntity;
+        this.pincode=s1;
+    }
+
+    public AddressEntity() {
+
+    }
+
     @ManyToMany(mappedBy = "address" ,cascade=CascadeType.ALL)
     private List<CustomerEntity> customer = new ArrayList<CustomerEntity>();
 

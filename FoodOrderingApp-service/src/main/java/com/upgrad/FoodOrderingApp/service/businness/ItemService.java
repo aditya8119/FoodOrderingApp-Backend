@@ -2,6 +2,7 @@ package com.upgrad.FoodOrderingApp.service.businness;
 
 import java.util.List;
 
+import com.upgrad.FoodOrderingApp.service.exception.ItemNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,14 @@ public class ItemService {
         if(restaurantEntity==null)
             throw new RestaurantNotFoundException("RNF-001","No restaurant by this id");
         return itemDao.getPopularOrders(restaurantEntity);
+    }
+
+    public ItemEntity getItemEntityById(String uuid) throws ItemNotFoundException {
+        ItemEntity item = itemDao.getItemEntityById(uuid);
+        if(item == null) {
+            throw new ItemNotFoundException("INF-003","No item by this id exist");
+        } else {
+            return item;
+        }
     }
 }
